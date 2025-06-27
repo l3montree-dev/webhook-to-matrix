@@ -1,0 +1,14 @@
+# .github/workflows/devsecops.yml
+
+# DevSecOps Workflow Definition. This workflow is triggered on every push to the repository
+name: DevSecOps Workflow
+on:
+    push:
+jobs:
+    call-devsecops:
+        uses: l3montree-dev/devguard-action/.github/workflows/full.yml@main
+        with:
+            asset-name: "l3montree-cybersecurity/projects/webhook-to-matrix/assets/webhook-to-matrix"
+            api-url: https://api.main.devguard.org
+        secrets:
+            devguard-token: "${{ secrets.DEVGUARD_TOKEN }}" # you need to create this secret in your GitHub repository settings
