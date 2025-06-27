@@ -1,2 +1,7 @@
 Dockerfile
 .git
+.env
+.env.example
+.gitignore
+.github
+README.md

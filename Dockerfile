@@ -4,7 +4,7 @@ FROM registry.opencode.de/open-code/badgebackend/badge-api/golang:1.24.4-bookwor
 WORKDIR /go/src/app
 COPY . .
 
-RUN go build
+RUN CGO_ENABLED=0 go build
 
 
 # https://console.cloud.google.com/artifacts/docker/distroless/us/gcr.io/static-debian12?inv=1&invt=Ab1PZQ
@@ -12,10 +12,10 @@ FROM gcr.io/distroless/static-debian12:nonroot
 
 USER 53111
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=build --chown=53111:53111 /go/src/app/webhook-to-matrix /
+COPY --from=build --chown=53111:53111 /go/src/app/webhook-to-matrix /usr/local/bin/webhook-to-matrix
 
 EXPOSE 5001
 
-CMD ["/webhook-to-matrix"]
+CMD ["webhook-to-matrix"]
