@@ -15,7 +15,11 @@ This little Golang bot/server listens to a webhook and sends the received data t
   - Generate access token for user
     - `curl -X POST -H 'Content-Type: application/json' -d '{ "type":"m.login.password", "user":"username", "password":"password" }' "https://matrix.org/_matrix/client/r0/login"`
 - Setup config file (`cp .env.example .env`) and adjust the variables in the `.env` file
-- Run the server (`go run main.go`) or via Helm Chart (tbd)
+- Run the server
+  - Directly via `Go`: `go run main.go`
+  - Docker: `docker build -t webhook-to-matrix . && docker run --rm -p 5001:5001 -v $(pwd)/.env:/app/.env:ro webhook-to-matrix`
+  - Helm: TBD
+
 - Setup apps (e.g. Glitchtip / Botkube / ...) to send data to the bot. E.g.:
   - `http://your-domain.com/webhook/my-webhook-secret/glitchtip` [Docs](https://glitchtip.com/documentation/error-tracking#turn-on-alerts)
   - `http://your-domain.com/webhook/my-webhook-secret/botkube` [Docs](https://docs.botkube.io/installation/webhook/)
