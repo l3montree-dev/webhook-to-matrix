@@ -10,10 +10,9 @@ func TestGlitchTipSlackMessage(t *testing.T) {
 	jsonStr := `{"alias": "GlitchTip", "text": "GlitchTip Alert", "attachments": [{"title": "*errors.errorString: Failed to setup database connection", "title_link": "https://xxx.com/devguard/issues/5", "text": null, "image_url": null, "color": "#e52b50", "fields": [{"title": "Project", "value": "devguard-api", "short": true}, {"title": "Environment", "value": "dev", "short": true}, {"title": "Release", "value": "0.11.1-439-g8f91aaa5-dirty", "short": false}], "mrkdown_in": ["text"]}], "sections": [{"activityTitle": "*errors.errorString: Failed to setup database connection", "activitySubtitle": "[View Issue DEVGUARD-API-5](https://xxx.com/devguard/issues/5)"}]}`
 	msg, err := convertRawJsonToMatrixMessage(jsonStr, GlitchTip)
 	assert.NoError(t, err)
-	print(msg)
 	assert.Equal(t, msg, &MatrixMessage{
 		Plain: "GlitchTip Alert",
-		Html:  "<b>GlitchTip Alert:</b> *errors.errorString: Failed to setup database connection (<a href=\"https://xxx.com/devguard/issues/5\">View Issue<a/>)",
+		Html:  "<b>GlitchTip Alert:</b> devguard-api: *errors.errorString: Failed to setup database connection (<a href=\"https://xxx.com/devguard/issues/5\">View Issue<a/>)",
 	})
 }
 
