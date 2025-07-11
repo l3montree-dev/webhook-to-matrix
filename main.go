@@ -37,7 +37,7 @@ func main() {
 	http.HandleFunc("/health", healthCheckHandler)
 	// set the webhook secret to all paths
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/glitchtip", os.Getenv("WEBHOOK_SECRET")), api.TransformGlitchTip)
-	http.HandleFunc(fmt.Sprintf("/webhook/%s/botkube", os.Getenv("WEBHOOK_SECRET")), api.TransformGlitchTip)
+	http.HandleFunc(fmt.Sprintf("/webhook/%s/botkube", os.Getenv("WEBHOOK_SECRET")), api.TransformBotKube)
 	addr := fmt.Sprintf("0.0.0.0:%d", Port)
 	log.Printf("Listening at %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))

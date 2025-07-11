@@ -21,7 +21,11 @@ const (
 )
 
 func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
-	transform(res, req, "glitchtip")
+	transform(res, req, GlitchTip)
+}
+
+func TransformBotKube(res http.ResponseWriter, req *http.Request) {
+	transform(res, req, Botkube)
 }
 
 func bodyToString(req *http.Request) (*string, error) {

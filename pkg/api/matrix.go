@@ -1,9 +1,12 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -35,21 +38,17 @@ func SendMessage(matrixMessage MatrixMessage) error {
 	}
 	jsonMsg, _ := json.Marshal(matMsg)
 
-	/*
-		resp, err := http.Post(matrixURL, "application/json", bytes.NewBuffer(jsonMsg))
-		if err != nil {
-			log.Printf("Matrix send error: %v", err)
-			return err
-		}
-		defer resp.Body.Close()
-		if resp.StatusCode >= 300 {
-			bb, _ := io.ReadAll(resp.Body)
-			log.Printf("Matrix API error: %s", string(bb))
-			return err
-		}
-	*/
+	resp, err := http.Post(matrixURL, "application/json", bytes.NewBuffer(jsonMsg))
+	if err != nil {
+		log.Printf("Matrix send error: %v", err)
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		bb, _ := io.ReadAll(resp.Body)
+		log.Printf("Matrix API error: %s", string(bb))
+		return err
+	}
 
-	log.Printf("URL: %v", matrixURL)
-	print(jsonMsg)
 	return nil
 }
