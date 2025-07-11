@@ -1,12 +1,9 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -19,8 +16,8 @@ type InternalMatrixMessage struct {
 }
 
 type MatrixMessage struct {
-	Body string `json:"body"`
-	Html string `json:"html"`
+	Plain string `json:"plain"`
+	Html  string `json:"html"`
 }
 
 func SendMessage(matrixMessage MatrixMessage) error {
@@ -32,22 +29,27 @@ func SendMessage(matrixMessage MatrixMessage) error {
 
 	matMsg := InternalMatrixMessage{
 		MsgType:       "m.text",
-		Body:          matrixMessage.Body,
+		Body:          matrixMessage.Plain,
 		Format:        "org.matrix.custom.html",
 		FormattedBody: matrixMessage.Html,
 	}
 	jsonMsg, _ := json.Marshal(matMsg)
 
-	resp, err := http.Post(matrixURL, "application/json", bytes.NewBuffer(jsonMsg))
-	if err != nil {
-		log.Printf("Matrix send error: %v", err)
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 300 {
-		bb, _ := io.ReadAll(resp.Body)
-		log.Printf("Matrix API error: %s", string(bb))
-		return err
-	}
+	/*
+		resp, err := http.Post(matrixURL, "application/json", bytes.NewBuffer(jsonMsg))
+		if err != nil {
+			log.Printf("Matrix send error: %v", err)
+			return err
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode >= 300 {
+			bb, _ := io.ReadAll(resp.Body)
+			log.Printf("Matrix API error: %s", string(bb))
+			return err
+		}
+	*/
+
+	log.Printf("URL: %v", matrixURL)
+	print(jsonMsg)
 	return nil
 }
