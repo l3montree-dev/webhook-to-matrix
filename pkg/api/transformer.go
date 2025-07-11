@@ -44,7 +44,6 @@ func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel) 
 	basepath := filepath.Dir(filepath.Dir(b))
 
 	transformationFilePath := fmt.Sprintf("%s/models/%s.libsonnet", basepath, transformationType)
-	print(transformationFilePath)
 
 	// Read the Jsonnet mapping code
 	mappingCode, err := os.ReadFile(transformationFilePath)
