@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -43,10 +44,11 @@ func SendMessage(matrixMessage MatrixMessage, roomID string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode >= 300 {
+	statusCode := resp.StatusCode
+	if statusCode >= 300 {
 		bb, _ := io.ReadAll(resp.Body)
 		log.Printf("Matrix API error: %s", string(bb))
-		return err
+		return errors.New(fmt.Sprintf("Matrix API error - Err: %s", string(bb)))
 	}
 
 	return nil
