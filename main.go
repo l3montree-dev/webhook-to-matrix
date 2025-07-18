@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// Check if required environment variables are set
-	requiredVars := []string{"ROOM_ID", "ACCESS_TOKEN", "HOME_SERVER", "WEBHOOK_SECRET"}
+	requiredVars := []string{"ACCESS_TOKEN", "HOME_SERVER", "WEBHOOK_SECRET"}
 	for _, v := range requiredVars {
 		if value := os.Getenv(v); value == "" {
 			log.Fatalf("Environment variable %s is not set", v)

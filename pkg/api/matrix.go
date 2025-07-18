@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -23,12 +24,11 @@ type MatrixMessage struct {
 	Html  string `json:"html"`
 }
 
-func SendMessage(matrixMessage MatrixMessage) error {
+func SendMessage(matrixMessage MatrixMessage, roomID string) error {
 	var AccessToken = os.Getenv("ACCESS_TOKEN")
-	var RoomID = os.Getenv("ROOM_ID")
 	var Homeserver = os.Getenv("HOME_SERVER")
 
-	matrixURL := fmt.Sprintf("%s/_matrix/client/v3/rooms/%s/send/m.room.message?access_token=%s", Homeserver, RoomID, AccessToken)
+	matrixURL := fmt.Sprintf("%s/_matrix/client/v3/rooms/%s/send/m.room.message?access_token=%s", Homeserver, roomID, AccessToken)
 
 	matMsg := InternalMatrixMessage{
 		MsgType:       "m.text",
@@ -44,10 +44,11 @@ func SendMessage(matrixMessage MatrixMessage) error {
 		return err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode >= 300 {
+	statusCode := resp.StatusCode
+	if statusCode >= 300 {
 		bb, _ := io.ReadAll(resp.Body)
 		log.Printf("Matrix API error: %s", string(bb))
-		return err
+		return errors.New(fmt.Sprintf("Matrix API error - Err: %s", string(bb)))
 	}
 
 	return nil

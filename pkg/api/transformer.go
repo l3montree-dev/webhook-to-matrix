@@ -68,6 +68,12 @@ func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel) 
 }
 
 func transform(res http.ResponseWriter, req *http.Request, transformationType AppModel) {
+	roomID := req.URL.Query().Get("roomid")
+	if roomID == "" {
+		http.Error(res, "missing roomid", http.StatusBadRequest)
+		return
+	}
+
 	body, err := bodyToString(req)
 	if err != nil {
 		log.Printf("failed to read body: %v", err)
@@ -82,7 +88,7 @@ func transform(res http.ResponseWriter, req *http.Request, transformationType Ap
 		return
 	}
 
-	err = SendMessage(*msg)
+	err = SendMessage(*msg, roomID)
 	if err != nil {
 		log.Printf("Matrix send error: %v", err)
 		http.Error(res, "Matrix send error", 500)
