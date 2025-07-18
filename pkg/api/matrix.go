@@ -19,8 +19,8 @@ type InternalMatrixMessage struct {
 }
 
 type MatrixMessage struct {
-	Body string `json:"body"`
-	Html string `json:"html"`
+	Plain string `json:"plain"`
+	Html  string `json:"html"`
 }
 
 func SendMessage(matrixMessage MatrixMessage) error {
@@ -32,7 +32,7 @@ func SendMessage(matrixMessage MatrixMessage) error {
 
 	matMsg := InternalMatrixMessage{
 		MsgType:       "m.text",
-		Body:          matrixMessage.Body,
+		Body:          matrixMessage.Plain,
 		Format:        "org.matrix.custom.html",
 		FormattedBody: matrixMessage.Html,
 	}
@@ -49,5 +49,6 @@ func SendMessage(matrixMessage MatrixMessage) error {
 		log.Printf("Matrix API error: %s", string(bb))
 		return err
 	}
+
 	return nil
 }
