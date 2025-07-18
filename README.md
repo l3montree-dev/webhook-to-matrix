@@ -19,10 +19,9 @@ This little Golang bot/server listens to a webhook and sends the received data t
   - Directly via `Go`: `go run main.go`
   - Docker: `docker build -t webhook-to-matrix . && docker run --rm -p 5001:5001 -v $(pwd)/.env:/app/.env:ro webhook-to-matrix`
   - Helm: TBD
-
 - Setup apps (e.g. Glitchtip / Botkube / ...) to send data to the bot. E.g.:
-  - `http://your-domain.com/webhook/my-webhook-secret/glitchtip` [Docs](https://glitchtip.com/documentation/error-tracking#turn-on-alerts)
-  - `http://your-domain.com/webhook/my-webhook-secret/botkube` [Docs](https://docs.botkube.io/installation/webhook/)
+  - `http://your-domain.com/webhook/my-webhook-secret/glitchtip?roomid=xyz` [Docs](https://glitchtip.com/documentation/error-tracking#turn-on-alerts)
+  - `http://your-domain.com/webhook/my-webhook-secret/botkube?roomid=xyz` [Docs](https://docs.botkube.io/installation/webhook/)
 
 ## Architecture 
 
