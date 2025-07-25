@@ -6,11 +6,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
-	"path/filepath"
-	"runtime"
 
 	"github.com/google/go-jsonnet"
+
+	_ "embed"
 )
 
 type AppModel string
@@ -20,12 +19,19 @@ const (
 	Botkube            = "botkube"
 )
 
+//go:embed models/glitchtip.libsonnet
+var mappingCodeGlitchTip string
+
+//go:embed models/botkube.libsonnet
+var mappingCodeBotKube string
+
 func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
-	transform(res, req, GlitchTip)
+
+	transform(res, req, GlitchTip, mappingCodeGlitchTip)
 }
 
 func TransformBotKube(res http.ResponseWriter, req *http.Request) {
-	transform(res, req, Botkube)
+	transform(res, req, Botkube, mappingCodeBotKube)
 }
 
 func bodyToString(req *http.Request) (*string, error) {
@@ -39,21 +45,12 @@ func bodyToString(req *http.Request) (*string, error) {
 	return &bodyStr, nil
 }
 
-func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel) (*MatrixMessage, error) {
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Dir(filepath.Dir(b))
-
-	transformationFilePath := fmt.Sprintf("%s/models/%s.libsonnet", basepath, transformationType)
-
-	// Read the Jsonnet mapping code
-	mappingCode, err := os.ReadFile(transformationFilePath)
-	if err != nil {
-		return nil, err
-	}
+func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel, mappingCode string) (*MatrixMessage, error) {
+	debugName := fmt.Sprintf("%s.libsonnet", transformationType)
 
 	vm := jsonnet.MakeVM()
 	vm.ExtVar("input", jsonStr)
-	output, err := vm.EvaluateAnonymousSnippet(transformationFilePath, string(mappingCode))
+	output, err := vm.EvaluateAnonymousSnippet(debugName, string(mappingCode))
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +64,7 @@ func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel) 
 	return &msg, nil
 }
 
-func transform(res http.ResponseWriter, req *http.Request, transformationType AppModel) {
+func transform(res http.ResponseWriter, req *http.Request, transformationType AppModel, mappingCode string) {
 	roomID := req.URL.Query().Get("roomid")
 	if roomID == "" {
 		http.Error(res, "missing roomid", http.StatusBadRequest)
@@ -81,7 +78,7 @@ func transform(res http.ResponseWriter, req *http.Request, transformationType Ap
 		return
 	}
 
-	msg, err := convertRawJsonToMatrixMessage(*body, transformationType)
+	msg, err := convertRawJsonToMatrixMessage(*body, transformationType, mappingCode)
 	if err != nil {
 		log.Printf("failed to convert: %v", err)
 		http.Error(res, "failed to convert message", http.StatusBadRequest)
