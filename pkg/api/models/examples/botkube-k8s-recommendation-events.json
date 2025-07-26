@@ -1,0 +1,24 @@
+{
+    "source": "k8s-recommendation-events",
+    "data": {
+        "APIVersion": "v1",
+        "Action": "",
+        "Cluster": "development",
+        "Count": 0,
+        "Kind": "Pod",
+        "Level": "success",
+        "Messages": null,
+        "Name": "error-pod",
+        "Namespace": "default",
+        "Reason": "",
+        "Recommendations": [
+            "The 'latest' tag used in 'nonexistentimage:latest' image of Pod 'default/error-pod' container 'error-pod' should be avoided."
+        ],
+        "Resource": "v1/pods",
+        "TimeStamp": "2025-07-26T18:40:23Z",
+        "Title": "v1/pods created",
+        "Type": "create",
+        "Warnings": null
+    },
+    "timeStamp": "0001-01-01T00:00:00Z"
+}

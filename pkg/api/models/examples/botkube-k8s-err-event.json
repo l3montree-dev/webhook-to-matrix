@@ -1,0 +1,24 @@
+{
+    "source": "k8s-err-events",
+    "data": {
+        "APIVersion": "v1",
+        "Action": "",
+        "Cluster": "development",
+        "Count": 1,
+        "Kind": "Pod",
+        "Level": "error",
+        "Messages": [
+            "Failed to pull image \"nonexistentimage:latest\": failed to pull and unpack image \"docker.io/library/nonexistentimage:latest\": failed to resolve reference \"docker.io/library/nonexistentimage:latest\": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed"
+        ],
+        "Name": "error-pod",
+        "Namespace": "default",
+        "Reason": "Failed",
+        "Recommendations": null,
+        "Resource": "v1/pods",
+        "TimeStamp": "2025-07-26T18:40:25Z",
+        "Title": "v1/pods error",
+        "Type": "error",
+        "Warnings": null
+    },
+    "timeStamp": "0001-01-01T00:00:00Z"
+}
