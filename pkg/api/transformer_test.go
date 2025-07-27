@@ -54,13 +54,12 @@ func TestBotKubeWebHookMessage(t *testing.T) {
 
 	// Expected message with the improved schema
 	expectedPlain := `✅ SUCCESS Kubernetes Created
-📦 Pod/nginx in default@David-Test
-🕐 2025-07-11T07:24:02Z
+📦 **Pod/nginx** in **default**@David-Test
 
 💡 Recommendations:
 • The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.`
 
-	expectedHtml := `<b>✅ SUCCESS Kubernetes Created</b><br/><code>Pod/nginx</code> in <code>default@David-Test</code><br/>🕐 <i>2025-07-11T07:24:02Z</i><br/><b>💡 Recommendations:</b><ul><li>The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.</li></ul>`
+	expectedHtml := `<b>✅ SUCCESS Kubernetes Created</b><br/>📦 <b>Pod/nginx</b> in <b>default</b>@<code>David-Test</code><br/><b>💡 Recommendations:</b><ul><li>The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.</li></ul>`
 
 	assert.Equal(t, &MatrixMessage{
 		Plain: expectedPlain,
@@ -75,13 +74,12 @@ func TestBotKubeErrorWebHookMessage(t *testing.T) {
 
 	// Expected message with the improved schema for error events
 	expectedPlain := `🔴 ERROR Kubernetes Error
-📦 Pod/error-pod in default@development
-🕐 2025-07-26T18:40:25Z
+📦 **Pod/error-pod** in **default**@development
 
 📋 Messages:
 • Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed`
 
-	expectedHtml := `<b>🔴 ERROR Kubernetes Error</b><br/><code>Pod/error-pod</code> in <code>default@development</code><br/>🕐 <i>2025-07-26T18:40:25Z</i><br/><br/><b>📋 Messages:</b><ul><li>Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed</li></ul>`
+	expectedHtml := `<b>🔴 ERROR Kubernetes Error</b><br/>📦 <b>Pod/error-pod</b> in <b>default</b>@<code>development</code><br/><br/><b>📋 Messages:</b><ul><li>Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed</li></ul>`
 
 	assert.Equal(t, &MatrixMessage{
 		Plain: expectedPlain,
