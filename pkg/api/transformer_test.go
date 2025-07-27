@@ -56,10 +56,9 @@ func TestBotKubeWebHookMessage(t *testing.T) {
 	expectedPlain := `✅ SUCCESS Kubernetes Created
 📦 **Pod/nginx** in **default**@David-Test
 
-💡 Recommendations:
-• The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.`
+💡 The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.`
 
-	expectedHtml := `<b>✅ SUCCESS Kubernetes Created</b><br/>📦 <b>Pod/nginx</b> in <b>default</b>@<code>David-Test</code><br/><b>💡 Recommendations:</b><ul><li>The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.</li></ul>`
+	expectedHtml := `<b>✅ SUCCESS Kubernetes Created</b><br/>📦 <b>Pod/nginx</b> in <b>default</b>@<code>David-Test</code><br/><br/>💡 The 'latest' tag used in 'nginx' image of Pod 'default/nginx' container 'nginx' should be avoided.`
 
 	assert.Equal(t, &MatrixMessage{
 		Plain: expectedPlain,
@@ -76,10 +75,9 @@ func TestBotKubeErrorWebHookMessage(t *testing.T) {
 	expectedPlain := `🔴 ERROR Kubernetes Error
 📦 **Pod/error-pod** in **default**@development
 
-📋 Messages:
-• Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed`
+📋 Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed`
 
-	expectedHtml := `<b>🔴 ERROR Kubernetes Error</b><br/>📦 <b>Pod/error-pod</b> in <b>default</b>@<code>development</code><br/><br/><b>📋 Messages:</b><ul><li>Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed</li></ul>`
+	expectedHtml := `<b>🔴 ERROR Kubernetes Error</b><br/>📦 <b>Pod/error-pod</b> in <b>default</b>@<code>development</code><br/><br/>📋 Failed to pull image "nonexistentimage:latest": failed to pull and unpack image "docker.io/library/nonexistentimage:latest": failed to resolve reference "docker.io/library/nonexistentimage:latest": pull access denied, repository does not exist or may require authorization: server message: insufficient_scope: authorization failed`
 
 	assert.Equal(t, &MatrixMessage{
 		Plain: expectedPlain,

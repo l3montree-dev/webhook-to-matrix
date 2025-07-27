@@ -29,15 +29,24 @@ local hasWarnings = std.objectHas(data, "Warnings") && data.Warnings != null && 
 
 // Generate content sections
 local messagesSection = if hasMessages then 
-  "\n\n📋 Messages:\n" + std.join("\n", ["• " + msg for msg in data.Messages])
+  if std.length(data.Messages) == 1 then
+    "\n\n📋 " + data.Messages[0]
+  else
+    "\n\n📋 Messages:\n" + std.join("\n", ["• " + msg for msg in data.Messages])
   else "";
 
 local recommendationsSection = if hasRecommendations then
-  "\n\n💡 Recommendations:\n" + std.join("\n", ["• " + rec for rec in data.Recommendations])
+  if std.length(data.Recommendations) == 1 then
+    "\n\n💡 " + data.Recommendations[0]
+  else
+    "\n\n💡 Recommendations:\n" + std.join("\n", ["• " + rec for rec in data.Recommendations])
   else "";
 
 local warningsSection = if hasWarnings then
-  "\n\n⚠️ Warnings:\n" + std.join("\n", ["• " + warn for warn in data.Warnings])
+  if std.length(data.Warnings) == 1 then
+    "\n\n⚠️ " + data.Warnings[0]
+  else
+    "\n\n⚠️ Warnings:\n" + std.join("\n", ["• " + warn for warn in data.Warnings])
   else "";
 
 // Resource info - highlight the most important parts
@@ -51,12 +60,24 @@ local plainBody = resourceInfo + messagesSection + recommendationsSection + warn
 local htmlTitle = "<b>" + formatLevel(level) + " Kubernetes " + formatType(type) + "</b>";
 local htmlResourceInfo = "📦 <b>" + kind + "/" + name + "</b> in <b>" + namespace + "</b>@<code>" + cluster + "</code>";
 local htmlBody = htmlResourceInfo +
-  (if hasMessages then "<br/><br/><b>📋 Messages:</b><ul>" + 
-    std.join("", ["<li>" + msg + "</li>" for msg in data.Messages]) + "</ul>" else "") +
-  (if hasRecommendations then "<br/><b>💡 Recommendations:</b><ul>" + 
-    std.join("", ["<li>" + rec + "</li>" for rec in data.Recommendations]) + "</ul>" else "") +
-  (if hasWarnings then "<br/><b>⚠️ Warnings:</b><ul>" + 
-    std.join("", ["<li>" + warn + "</li>" for warn in data.Warnings]) + "</ul>" else "");
+  (if hasMessages then 
+    if std.length(data.Messages) == 1 then
+      "<br/><br/>📋 " + data.Messages[0]
+    else
+      "<br/><br/><b>📋 Messages:</b><ul>" + std.join("", ["<li>" + msg + "</li>" for msg in data.Messages]) + "</ul>"
+  else "") +
+  (if hasRecommendations then 
+    if std.length(data.Recommendations) == 1 then
+      "<br/><br/>💡 " + data.Recommendations[0]
+    else
+      "<br/><b>💡 Recommendations:</b><ul>" + std.join("", ["<li>" + rec + "</li>" for rec in data.Recommendations]) + "</ul>"
+  else "") +
+  (if hasWarnings then 
+    if std.length(data.Warnings) == 1 then
+      "<br/><br/>⚠️ " + data.Warnings[0]
+    else
+      "<br/><b>⚠️ Warnings:</b><ul>" + std.join("", ["<li>" + warn + "</li>" for warn in data.Warnings]) + "</ul>"
+  else "");
 
 {
   plain: plainTitle + "\n" + plainBody,
