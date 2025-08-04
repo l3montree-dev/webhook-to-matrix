@@ -84,3 +84,51 @@ func TestBotKubeErrorWebHookMessage(t *testing.T) {
 		Html:  expectedHtml,
 	}, msg)
 }
+
+func TestDevGuardDependencyVulnerabilityMessage(t *testing.T) {
+	jsonStr := `{"organization":{"id":"3fd43312-7ada-4be5-a5bf-7fe340a3be8a","name":"WetterOnline","slug":"wetteronline"},"project":{"id":"ce298219-814c-4e54-bc58-a0a5b2b08973","name":"Example Project","slug":"example-project"},"asset":{"id":"856ab205-cc6d-4c49-878d-4047102ffa33","name":"Example Asset","slug":"example-asset"},"assetVersion":{"name":"example-version","slug":"example-version"},"payload":[{"id":"dep-vuln-001","cve":{"cve":"CVE-2021-44228","description":"Apache Log4j2 <=2.14.1 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints.","cvss":10,"severity":"critical"},"cveID":"CVE-2021-44228","componentPurl":"pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1","componentFixedVersion":"2.15.0","riskAssessment":95,"rawRiskAssessment":9.8,"priority":1}],"type":"dependencyVulnerabilities"}`
+	msg, err := convertRawJsonToMatrixMessage(jsonStr, DevGuard, mappingCodeDevGuard)
+	assert.NoError(t, err)
+
+	// Expected message for single critical vulnerability with CVE details and raw risk
+	expectedPlain := `🛡️ DevGuard Security Scan
+📁 Example Project / Example Asset (example-version)
+
+🔴 CRITICAL CVE-2021-44228 (CVSS: 10) [Risk: 9.8]
+📦 log4j-core → Fix: 2.15.0
+💬 Apache Log4j2 <=2.14.1 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints.`
+
+	expectedHtml := `<b>🛡️ DevGuard Security Scan</b><br/>📁 <b>Example Project</b> / <b>Example Asset</b> <i>(example-version)</i><br/><br/>🔴 CRITICAL <code>CVE-2021-44228</code> <i>(CVSS: 10)</i> <i>[Risk: 9.8]</i><br/>📦 <code>log4j-core</code> → Fix: <code>2.15.0</code><br/>💬 <i>Apache Log4j2 <=2.14.1 JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints.</i>`
+
+	assert.Equal(t, &MatrixMessage{
+		Plain: expectedPlain,
+		Html:  expectedHtml,
+	}, msg)
+}
+
+func TestDevGuardMultipleVulnerabilitiesMessage(t *testing.T) {
+	jsonStr := `{"organization":{"name":"WetterOnline","slug":"wetteronline"},"project":{"name":"Example Project","slug":"example-project"},"asset":{"name":"Example Asset","slug":"example-asset"},"assetVersion":{"name":"v1.0.0"},"payload":[{"cve":{"cvss":10},"cveID":"CVE-2021-44228","componentPurl":"pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1","riskAssessment":95,"rawRiskAssessment":9.8,"priority":1},{"cve":{"cvss":7.5},"cveID":"CVE-2022-12345","componentPurl":"pkg:npm/lodash@4.0.0","riskAssessment":75,"rawRiskAssessment":7.2,"priority":2},{"cve":{"cvss":4.5},"cveID":"CVE-2023-56789","componentPurl":"pkg:npm/express@3.0.0","riskAssessment":45,"rawRiskAssessment":4.1,"priority":3}],"type":"dependencyVulnerabilities"}`
+	msg, err := convertRawJsonToMatrixMessage(jsonStr, DevGuard, mappingCodeDevGuard)
+	assert.NoError(t, err)
+
+	// Expected message for multiple vulnerabilities with CVSS and raw risk scores
+	expectedPlain := `🛡️ DevGuard Security Scan
+📁 Example Project / Example Asset (v1.0.0)
+
+📊 3 vulnerabilities detected:
+🔴 1 Critical
+🟠 1 High
+🟡 1 Medium
+
+🔍 Top vulnerabilities:
+• 🔴 CRITICAL CVE-2021-44228 in log4j-core (CVSS: 10) [Risk: 9.8]
+• 🟠 HIGH CVE-2022-12345 in lodash (CVSS: 7.5) [Risk: 7.2]
+• 🟡 MEDIUM CVE-2023-56789 in express (CVSS: 4.5) [Risk: 4.1]`
+
+	expectedHtml := `<b>🛡️ DevGuard Security Scan</b><br/>📁 <b>Example Project</b> / <b>Example Asset</b> <i>(v1.0.0)</i><br/><br/>📊 <b>3 vulnerabilities detected:</b><br/>🔴 1 Critical<br/>🟠 1 High<br/>🟡 1 Medium<br/><br/>🔍 <b>Top vulnerabilities:</b><ul><li>🔴 CRITICAL <code>CVE-2021-44228</code> in <code>log4j-core</code> <i>(CVSS: 10)</i> <i>[Risk: 9.8]</i></li><li>🟠 HIGH <code>CVE-2022-12345</code> in <code>lodash</code> <i>(CVSS: 7.5)</i> <i>[Risk: 7.2]</i></li><li>🟡 MEDIUM <code>CVE-2023-56789</code> in <code>express</code> <i>(CVSS: 4.5)</i> <i>[Risk: 4.1]</i></li></ul>`
+
+	assert.Equal(t, &MatrixMessage{
+		Plain: expectedPlain,
+		Html:  expectedHtml,
+	}, msg)
+}

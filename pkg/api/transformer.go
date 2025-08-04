@@ -17,6 +17,7 @@ type AppModel string
 const (
 	GlitchTip AppModel = "glitchtip"
 	Botkube            = "botkube"
+	DevGuard           = "devguard"
 )
 
 //go:embed models/glitchtip.libsonnet
@@ -25,13 +26,19 @@ var mappingCodeGlitchTip string
 //go:embed models/botkube.libsonnet
 var mappingCodeBotKube string
 
-func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
+//go:embed models/devguard.libsonnet
+var mappingCodeDevGuard string
 
+func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, GlitchTip, mappingCodeGlitchTip)
 }
 
 func TransformBotKube(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, Botkube, mappingCodeBotKube)
+}
+
+func TransformDevGuard(res http.ResponseWriter, req *http.Request) {
+	transform(res, req, DevGuard, mappingCodeDevGuard)
 }
 
 func bodyToString(req *http.Request) (*string, error) {
@@ -41,7 +48,6 @@ func bodyToString(req *http.Request) (*string, error) {
 		return nil, err
 	}
 	bodyStr := string(body)
-	print(bodyStr)
 	return &bodyStr, nil
 }
 
