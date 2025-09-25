@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/google/go-jsonnet"
 
@@ -16,8 +17,9 @@ type AppModel string
 
 const (
 	GlitchTip AppModel = "glitchtip"
-	Botkube            = "botkube"
-	DevGuard           = "devguard"
+	Botkube   AppModel = "botkube"
+	DevGuard  AppModel = "devguard"
+	Github    AppModel = "github"
 )
 
 //go:embed models/glitchtip.libsonnet
@@ -29,6 +31,9 @@ var mappingCodeBotKube string
 //go:embed models/devguard.libsonnet
 var mappingCodeDevGuard string
 
+//go:embed models/github.libsonnet
+var mappingCodeGithub string
+
 func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, GlitchTip, mappingCodeGlitchTip)
 }
@@ -39,6 +44,10 @@ func TransformBotKube(res http.ResponseWriter, req *http.Request) {
 
 func TransformDevGuard(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, DevGuard, mappingCodeDevGuard)
+}
+
+func TransformGithub(res http.ResponseWriter, req *http.Request) {
+	transform(res, req, Github, mappingCodeGithub)
 }
 
 func bodyToString(req *http.Request) (*string, error) {
@@ -61,12 +70,16 @@ func convertRawJsonToMatrixMessage(jsonStr string, transformationType AppModel, 
 		return nil, err
 	}
 
+	// Check if output is null (for ignored events/users)
+	if strings.TrimSpace(output) == "null" {
+		return nil, nil
+	}
+
 	var msg MatrixMessage
 	err = json.Unmarshal([]byte(output), &msg)
 	if err != nil {
 		return nil, err
 	}
-
 	return &msg, nil
 }
 
@@ -88,6 +101,14 @@ func transform(res http.ResponseWriter, req *http.Request, transformationType Ap
 	if err != nil {
 		log.Printf("failed to convert: %v", err)
 		http.Error(res, "failed to convert message", http.StatusBadRequest)
+		return
+	}
+
+	// If msg is nil, the event should be ignored (filtered user or unsupported event)
+	if msg == nil {
+		log.Printf("Event ignored (filtered user or unsupported event type)")
+		res.WriteHeader(http.StatusOK)
+		res.Write([]byte("ignored"))
 		return
 	}
 
