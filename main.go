@@ -40,6 +40,7 @@ func main() {
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/botkube", os.Getenv("WEBHOOK_SECRET")), api.TransformBotKube)
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/devguard", os.Getenv("WEBHOOK_SECRET")), api.TransformDevGuard)
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/github", os.Getenv("WEBHOOK_SECRET")), api.TransformGithub)
+	http.HandleFunc(fmt.Sprintf("/webhook/%s/documentationassignment", os.Getenv("WEBHOOK_SECRET")), api.TransformDocumentationAssigment)
 	addr := fmt.Sprintf("0.0.0.0:%d", Port)
 	log.Printf("Listening at %s", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))

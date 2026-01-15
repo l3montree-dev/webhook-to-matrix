@@ -132,3 +132,27 @@ func TestDevGuardMultipleVulnerabilitiesMessage(t *testing.T) {
 		Html:  expectedHtml,
 	}, msg)
 }
+
+func TestTransformDocumentationAssigment(t *testing.T) {
+	// Input JSON for the custom message
+	jsonStr := `{
+		"message": "Time to review the documentation page",
+		"link": "https://example.com/docs-page"
+	}`
+
+	// Call your custom message function
+	msg, err := convertRawJsonToMatrixMessage(jsonStr, DocumentationAssigment, mappingCodeDocumentationAssigment)
+	assert.NoError(t, err)
+
+	// Expected plain text output
+	expectedPlain := "Time to review the documentation page https://example.com/docs-page"
+
+	// Expected HTML output
+	expectedHtml := `Time to review the documentation page <a href="https://example.com/docs-page">link</a>`
+
+	// Compare the outputs
+	assert.Equal(t, &MatrixMessage{
+		Plain: expectedPlain,
+		Html:  expectedHtml,
+	}, msg)
+}
