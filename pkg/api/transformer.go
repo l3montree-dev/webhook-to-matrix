@@ -20,7 +20,7 @@ const (
 	Botkube                AppModel = "botkube"
 	DevGuard               AppModel = "devguard"
 	Github                 AppModel = "github"
-	Gitlab                 AppModel = "gitlab"
+	GitlabOpenCode         AppModel = "gitlab-opencode"
 	DocumentationAssigment AppModel = "documentationassignment"
 )
 
@@ -59,7 +59,7 @@ func TransformGithub(res http.ResponseWriter, req *http.Request) {
 }
 
 func TransformGitlab(res http.ResponseWriter, req *http.Request) {
-	transform(res, req, Gitlab, mappingCodeGitlab)
+	transform(res, req, GitlabOpenCode, mappingCodeGitlab)
 }
 
 func TransformDocumentationAssigment(res http.ResponseWriter, req *http.Request) {
