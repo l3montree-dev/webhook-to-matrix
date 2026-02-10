@@ -20,6 +20,7 @@ const (
 	Botkube                AppModel = "botkube"
 	DevGuard               AppModel = "devguard"
 	Github                 AppModel = "github"
+	Gitlab                 AppModel = "gitlab"
 	DocumentationAssigment AppModel = "documentationassignment"
 )
 
@@ -34,6 +35,9 @@ var mappingCodeDevGuard string
 
 //go:embed models/github.libsonnet
 var mappingCodeGithub string
+
+//go:embed models/gitlab-opencode.libsonnet
+var mappingCodeGitlab string
 
 //go:embed models/documentationassignment.libsonnet
 var mappingCodeDocumentationAssigment string
@@ -52,6 +56,10 @@ func TransformDevGuard(res http.ResponseWriter, req *http.Request) {
 
 func TransformGithub(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, Github, mappingCodeGithub)
+}
+
+func TransformGitlab(res http.ResponseWriter, req *http.Request) {
+	transform(res, req, Gitlab, mappingCodeGitlab)
 }
 
 func TransformDocumentationAssigment(res http.ResponseWriter, req *http.Request) {
