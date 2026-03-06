@@ -4,6 +4,7 @@ local input = std.parseJson(std.extVar('input'));
 local ignoredUsers = [
   // "example-user",
   // "bot-user",
+  devguard
 ];
 
 // Check if user should be ignored
