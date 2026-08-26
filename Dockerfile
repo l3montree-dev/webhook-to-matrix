@@ -1,5 +1,5 @@
 # https://hub.docker.com/_/golang/tags
-FROM registry.opencode.de/open-code/badgebackend/badge-api/golang:1.24.4-bookworm@sha256:ee7ff13d239350cc9b962c1bf371a60f3c32ee00eaaf0d0f0489713a87e51a67 AS build
+FROM golang:1.26.5@sha256:705e964a93a2fd2e75c7d59bb7d781b57e30f12293ffde5175c69229e18fb678 AS build
 
 WORKDIR /go/src/app
 COPY . .
