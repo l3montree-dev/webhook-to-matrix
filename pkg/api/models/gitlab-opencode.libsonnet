@@ -96,6 +96,26 @@ local generateNoteMessage() =
   else
     null;
 
+// Generate message for pipeline events (only notify on failure)
+local generatePipelineMessage() =
+  local attrs = input.object_attributes;
+  local status = attrs.status;
+  local repo_name = input.project.path_with_namespace;
+  local ref = attrs.ref;
+  local pipeline_id = std.toString(attrs.id);
+  local pipeline_url = input.project.web_url + "/-/pipelines/" + pipeline_id;
+  local user = if std.objectHas(input, 'user') && input.user != null then input.user.username else "unknown";
+
+  if status != "failed" then
+    null
+  else if shouldIgnoreUser(user) then
+    null
+  else
+    {
+      plain: "#### OpenCode\n[" + repo_name + "] ❌ Pipeline #" + pipeline_id + " failed on " + ref + " (triggered by " + user + ")\n" + pipeline_url,
+      html: "<h4>OpenCode</h4><strong>[" + repo_name + "]</strong> ❌ Pipeline <a href=\"" + pipeline_url + "\">#" + pipeline_id + "</a> failed on <strong>" + ref + "</strong> (triggered by " + user + ")"
+    };
+
 // Main logic to determine event type and generate appropriate message
 local object_kind = if std.objectHas(input, 'object_kind') then input.object_kind else null;
 
@@ -103,6 +123,8 @@ if object_kind == "issue" then
   generateIssueMessage()
 else if object_kind == "note" then
   generateNoteMessage()
+else if object_kind == "pipeline" then
+  generatePipelineMessage()
 else
   // Unsupported event type, return null to ignore
   null
