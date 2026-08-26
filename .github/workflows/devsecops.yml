@@ -8,7 +8,8 @@ jobs:
     call-devsecops:
         uses: l3montree-dev/devguard-ci-components/.github/workflows/full.yml@main
         with:
-            asset-name: "l3montree-cybersecurity/projects/l3montree-intern/assets/webhook-to-matrix-gateway"
-            api-url: https://api.main.devguard.org
+            devguard-asset-name: "l3montree-cybersecurity/projects/l3montree-intern/assets/webhook-to-matrix-gateway"
+            devguard-api-url: https://api.main.devguard.org
+            devguard-web-ui: https://main.devguard.org
         secrets:
             devguard-token: "${{ secrets.DEVGUARD_TOKEN }}" # you need to create this secret in your GitHub repository settings
