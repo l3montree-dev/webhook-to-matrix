@@ -67,7 +67,11 @@ func TransformDocumentationAssigment(res http.ResponseWriter, req *http.Request)
 }
 
 func bodyToString(req *http.Request) (*string, error) {
-	defer req.Body.Close()
+	defer func() {
+		if closeErr := req.Body.Close(); closeErr != nil {
+			log.Printf("failed to close request body: %v", closeErr)
+		}
+	}()
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		return nil, err
@@ -124,7 +128,9 @@ func transform(res http.ResponseWriter, req *http.Request, transformationType Ap
 	if msg == nil {
 		log.Printf("Event ignored (filtered user or unsupported event type)")
 		res.WriteHeader(http.StatusOK)
-		res.Write([]byte("ignored"))
+		if _, err := res.Write([]byte("ignored")); err != nil {
+			log.Printf("failed to write response: %v", err)
+		}
 		return
 	}
 
@@ -136,5 +142,7 @@ func transform(res http.ResponseWriter, req *http.Request, transformationType Ap
 	}
 
 	res.WriteHeader(http.StatusOK)
-	res.Write([]byte("ok"))
+	if _, err := res.Write([]byte("ok")); err != nil {
+		log.Printf("failed to write response: %v", err)
+	}
 }

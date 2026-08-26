@@ -4,6 +4,8 @@
 name: DevSecOps Workflow
 on:
     push:
+permissions:
+    contents: read
 jobs:
     call-devsecops:
         uses: l3montree-dev/devguard-ci-components/.github/workflows/full.yml@main

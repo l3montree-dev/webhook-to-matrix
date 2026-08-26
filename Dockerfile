@@ -18,4 +18,6 @@ COPY --from=build --chown=53111:53111 /go/src/app/webhook-to-matrix /usr/local/b
 
 EXPOSE 5001
 
+# checkov:skip=CKV_DOCKER_2: distroless/static has no shell/curl to run a HEALTHCHECK; liveness/readiness
+# is handled by the orchestrator (e.g. Kubernetes probes) hitting the /health endpoint instead.
 CMD ["webhook-to-matrix"]

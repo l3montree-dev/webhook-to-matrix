@@ -16,7 +16,9 @@ func healthCheckHandler(w http.ResponseWriter, _ *http.Request) {
 	// answer a json response with a 200 OK status
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"ok"}`))
+	if _, err := w.Write([]byte(`{"status":"ok"}`)); err != nil {
+		log.Printf("failed to write health check response: %v", err)
+	}
 }
 
 func main() {
@@ -44,5 +46,6 @@ func main() {
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/documentationassignment", os.Getenv("WEBHOOK_SECRET")), api.TransformDocumentationAssigment)
 	addr := fmt.Sprintf("0.0.0.0:%d", Port)
 	log.Printf("Listening at %s", addr)
+	// nosemgrep: go.lang.security.audit.net.use-tls.use-tls // TLS is terminated upstream by the ingress/reverse proxy; this service only ever runs behind it.
 	log.Fatal(http.ListenAndServe(addr, nil))
 }

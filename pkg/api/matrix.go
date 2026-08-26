@@ -42,12 +42,16 @@ func SendMessage(matrixMessage MatrixMessage, roomID string) error {
 		log.Printf("Matrix send error: %v", err)
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if closeErr := resp.Body.Close(); closeErr != nil {
+			log.Printf("failed to close Matrix response body: %v", closeErr)
+		}
+	}()
 	statusCode := resp.StatusCode
 	if statusCode >= 300 {
 		bb, _ := io.ReadAll(resp.Body)
 		log.Printf("Matrix API error: %s", string(bb))
-		return fmt.Errorf("Matrix API error - Err: %s", string(bb))
+		return fmt.Errorf("matrix API error - Err: %s", string(bb))
 	}
 
 	return nil
