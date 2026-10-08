@@ -44,6 +44,7 @@ func main() {
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/github", os.Getenv("WEBHOOK_SECRET")), api.TransformGithub)
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/gitlab-opencode", os.Getenv("WEBHOOK_SECRET")), api.TransformGitlab)
 	http.HandleFunc(fmt.Sprintf("/webhook/%s/documentationassignment", os.Getenv("WEBHOOK_SECRET")), api.TransformDocumentationAssigment)
+	http.HandleFunc(fmt.Sprintf("/webhook/%s/uptimerobot", os.Getenv("WEBHOOK_SECRET")), api.TransformUptimeRobot)
 	addr := fmt.Sprintf("0.0.0.0:%d", Port)
 	log.Printf("Listening at %s", addr)
 	// nosemgrep: go.lang.security.audit.net.use-tls.use-tls // TLS is terminated upstream by the ingress/reverse proxy; this service only ever runs behind it.

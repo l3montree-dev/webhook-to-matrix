@@ -133,6 +133,45 @@ func TestDevGuardMultipleVulnerabilitiesMessage(t *testing.T) {
 	}, msg)
 }
 
+func TestUptimeRobotDownMessage(t *testing.T) {
+	jsonStr := `{"monitorID":"798861002","monitorFriendlyName":"api.devguard.org (Prod)","monitorURL":"https://api.devguard.org/api/v1/health","monitorType":"http","alertType":"1","alertTypeFriendlyName":"Down","alertDetails":"Connection Timeout","alertDuration":"","alertDateTime":"1791447623","incidentStartTime":"1791447623","incidentEndTime":"","httpStatusCode":"","sslExpiryDate":"*sslExpiryDate*","sslExpiryDaysLeft":"*sslExpiryDaysLeft*","domainExpireDate":"*domainExpireDate*","dashboardUrl":"https://dashboard.uptimerobot.com/monitor/798861002"}`
+	msg, err := convertRawJsonToMatrixMessage(jsonStr, UptimeRobot, mappingCodeUptimeRobot)
+	assert.NoError(t, err)
+
+	// Expected message for a down alert - unreplaced SSL / domain variables are skipped
+	expectedPlain := `🔴 DOWN api.devguard.org (Prod)
+🌐 https://api.devguard.org/api/v1/health
+💬 Connection Timeout
+🔗 https://dashboard.uptimerobot.com/monitor/798861002`
+
+	expectedHtml := `<b>🔴 DOWN api.devguard.org (Prod)</b><br/>🌐 <a href="https://api.devguard.org/api/v1/health">https://api.devguard.org/api/v1/health</a><br/>💬 Connection Timeout<br/>🔗 <a href="https://dashboard.uptimerobot.com/monitor/798861002">View in UptimeRobot</a>`
+
+	assert.Equal(t, &MatrixMessage{
+		Plain: expectedPlain,
+		Html:  expectedHtml,
+	}, msg)
+}
+
+func TestUptimeRobotUpMessage(t *testing.T) {
+	jsonStr := `{"monitorID":"798861002","monitorFriendlyName":"api.devguard.org (Prod)","monitorURL":"https://api.devguard.org/api/v1/health","monitorType":"http","alertType":"2","alertTypeFriendlyName":"Up","alertDetails":"HTTP 200 - OK","alertDuration":"605109","alertDateTime":"1791447625","incidentStartTime":"1790842516","incidentEndTime":"1791447625","httpStatusCode":"200","sslExpiryDate":"*sslExpiryDate*","sslExpiryDaysLeft":"*sslExpiryDaysLeft*","domainExpireDate":"*domainExpireDate*","dashboardUrl":"https://dashboard.uptimerobot.com/monitor/798861002"}`
+	msg, err := convertRawJsonToMatrixMessage(jsonStr, UptimeRobot, mappingCodeUptimeRobot)
+	assert.NoError(t, err)
+
+	// Expected message for an up alert including the downtime
+	expectedPlain := `✅ UP api.devguard.org (Prod)
+🌐 https://api.devguard.org/api/v1/health
+💬 HTTP 200 - OK
+⏱️ Down for 7d 5m
+🔗 https://dashboard.uptimerobot.com/monitor/798861002`
+
+	expectedHtml := `<b>✅ UP api.devguard.org (Prod)</b><br/>🌐 <a href="https://api.devguard.org/api/v1/health">https://api.devguard.org/api/v1/health</a><br/>💬 HTTP 200 - OK<br/>⏱️ Down for <b>7d 5m</b><br/>🔗 <a href="https://dashboard.uptimerobot.com/monitor/798861002">View in UptimeRobot</a>`
+
+	assert.Equal(t, &MatrixMessage{
+		Plain: expectedPlain,
+		Html:  expectedHtml,
+	}, msg)
+}
+
 func TestTransformDocumentationAssigment(t *testing.T) {
 	// Input JSON for the custom message
 	jsonStr := `{

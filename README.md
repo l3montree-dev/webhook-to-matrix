@@ -22,6 +22,22 @@ This little Golang bot/server listens to a webhook and sends the received data t
 - Setup apps (e.g. Glitchtip / Botkube / ...) to send data to the bot. E.g.:
   - `http://your-domain.com/webhook/my-webhook-secret/glitchtip?roomid=xyz` [Docs](https://glitchtip.com/documentation/error-tracking#turn-on-alerts)
   - `http://your-domain.com/webhook/my-webhook-secret/botkube?roomid=xyz` [Docs](https://docs.botkube.io/installation/webhook/)
+  - `http://your-domain.com/webhook/my-webhook-secret/uptimerobot?roomid=xyz` [Docs](https://help.uptimerobot.com/en/articles/14498593-webhook-integration)
+    - Disable "Send default variables", enable "Send as JSON (application/json)" and use this POST value:
+      ```json
+      {
+        "monitorFriendlyName": "*monitorFriendlyName*",
+        "monitorURL": "*monitorURL*",
+        "alertType": "*alertType*",
+        "alertTypeFriendlyName": "*alertTypeFriendlyName*",
+        "alertDetails": "*alertDetails*",
+        "alertDuration": "*alertDuration*",
+        "sslExpiryDate": "*sslExpiryDate*",
+        "sslExpiryDaysLeft": "*sslExpiryDaysLeft*",
+        "domainExpireDate": "*domainExpireDate*",
+        "dashboardUrl": "*dashboardUrl*"
+      }
+      ```
 
 ## Architecture 
 

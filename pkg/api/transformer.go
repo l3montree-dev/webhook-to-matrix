@@ -22,6 +22,7 @@ const (
 	Github                 AppModel = "github"
 	GitlabOpenCode         AppModel = "gitlab-opencode"
 	DocumentationAssigment AppModel = "documentationassignment"
+	UptimeRobot            AppModel = "uptimerobot"
 )
 
 //go:embed models/glitchtip.libsonnet
@@ -41,6 +42,9 @@ var mappingCodeGitlab string
 
 //go:embed models/documentationassignment.libsonnet
 var mappingCodeDocumentationAssigment string
+
+//go:embed models/uptimerobot.libsonnet
+var mappingCodeUptimeRobot string
 
 func TransformGlitchTip(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, GlitchTip, mappingCodeGlitchTip)
@@ -64,6 +68,10 @@ func TransformGitlab(res http.ResponseWriter, req *http.Request) {
 
 func TransformDocumentationAssigment(res http.ResponseWriter, req *http.Request) {
 	transform(res, req, DocumentationAssigment, mappingCodeDocumentationAssigment)
+}
+
+func TransformUptimeRobot(res http.ResponseWriter, req *http.Request) {
+	transform(res, req, UptimeRobot, mappingCodeUptimeRobot)
 }
 
 func bodyToString(req *http.Request) (*string, error) {
