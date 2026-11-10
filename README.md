@@ -38,6 +38,10 @@ This little Golang bot/server listens to a webhook and sends the received data t
         "dashboardUrl": "*dashboardUrl*"
       }
       ```
+  - `http://your-domain.com/webhook/my-webhook-secret/raw?roomid=xyz` sends the message as is:
+    ```json
+    { "plain": "Hello", "html": "<b>Hello</b>" }
+    ```
 
 ## Architecture 
 
