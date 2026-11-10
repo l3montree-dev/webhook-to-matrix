@@ -187,7 +187,7 @@ func TestTransformDocumentationAssigment(t *testing.T) {
 	expectedPlain := "Time to review the documentation page https://example.com/docs-page"
 
 	// Expected HTML output
-	expectedHtml := `Time to review the documentation page <a href="https://example.com/docs-page">link</a>`
+	expectedHtml := `Time to review the documentation page <a href="https://example.com/docs-page">https://example.com/docs-page</a>`
 
 	// Compare the outputs
 	assert.Equal(t, &MatrixMessage{
